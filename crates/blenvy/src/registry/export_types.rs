@@ -1,5 +1,6 @@
-use crate::{AssetRoot, BlenvyConfig};
+use crate::BlenvyConfig;
 use bevy::{
+    asset::io::file::FileAssetReader,
     log::info,
     prelude::{AppTypeRegistry, ReflectComponent, ReflectResource, World},
     reflect::{TypeInfo, TypeRegistration, VariantInfo},
@@ -12,8 +13,8 @@ pub fn export_types(world: &mut World) {
         .get_resource::<BlenvyConfig>()
         .expect("ExportComponentsConfig should exist at this stage");
 
-    let asset_root = world.resource::<AssetRoot>();
-    let registry_save_path = Path::join(&asset_root.0, &config.registry_save_path);
+    let asset_root = &FileAssetReader::get_base_path();
+    let registry_save_path = Path::join(&asset_root, &config.registry_save_path);
     let writer = File::create(registry_save_path).expect("should have created schema file");
 
     let components_to_filter_out = &config.registry_component_filter.clone();
