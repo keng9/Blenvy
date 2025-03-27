@@ -53,7 +53,7 @@ impl Default for BluePrintBundle {
 pub struct BlueprintsPlugin {}
 
 fn hot_reload(watching_for_changes: Res<WatchingForChanges>) -> bool {
-    // println!("hot reload ? {}", watching_for_changes.0);
+    // debug!("hot reload ? {}", watching_for_changes.0);
     watching_for_changes.0
 }
 
@@ -107,9 +107,12 @@ impl Plugin for BlueprintsPlugin {
             .add_plugins(RonAssetPlugin::<BlueprintPreloadAssets>::new(&["meta.ron"]))
             .configure_sets(
                 Update,
-                (GltfBlueprintsSet::Spawn, GltfBlueprintsSet::AfterSpawn)
-                    .chain()
-                    .after(GltfComponentsSet::Injection),
+                (
+                    GltfComponentsSet::Injection,
+                    GltfBlueprintsSet::Spawn,
+                    GltfBlueprintsSet::AfterSpawn,
+                )
+                    .chain(),
             )
             .add_systems(
                 Update,
